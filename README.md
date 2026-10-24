@@ -5,7 +5,7 @@
 - 線上版：`https://silver-safe-walk.hondao2026.workers.dev`
 - 母體「這里需要你」：[hd2026-bit/zheli-needs-you](https://github.com/hd2026-bit/zheli-needs-you)；網站版也放在這裡的 `public/zheli/index.html`，網址加 `/zheli/`
 - 網頁：`public/index.html`（單一檔案，不需建置）
-- 伺服器：`src/worker.js`（選用的帳號密碼、道路施工資料轉送、安全標頭）
+- 伺服器：`src/worker.js`（道路施工資料轉送、安全標頭）
 - 分析程式：`analysis/`，用開放資料重現所有數字（見 `analysis/README.md`）
 - 版本：每一版都是一筆 commit；內容見 `CHANGELOG.md`
 
@@ -16,7 +16,7 @@
 4. [SWOT 分析](#swot-分析)
 5. [利害關係人](#利害關係人)
 6. [100 日落地計畫](#100-日落地計畫)
-7. [部署](#部署cloudflare-workers免費不需綁卡)
+7. [部署](#部署)
 8. [平板 Demo](#平板-demo)
 
 ---
@@ -205,25 +205,8 @@
 
 ---
 
-## 部署：Cloudflare Workers（免費、不需綁卡）
-- 網址：`https://silver-safe-walk.hondao2026.workers.dev`
-- GitHub 推送到 `main` 後，Cloudflare 會自動重新部署
-
-### 設定／更換帳號密碼（選用）
-1. Cloudflare → Workers & Pages → silver-safe-walk → **Settings**，在頁面**最上方**的 **Variables and Secrets** 按 **+ Add**
-   （出現「Add environment variable」視窗才是對的）
-   ⚠️ 不要設在 **Builds** 卡片裡的 Variables and secrets，那是建置用的，網站讀不到
-2. 環境勾 **Production**，新增兩列並各自勾 **Secret**：
-   - `DEMO_USER`：帳號
-   - `DEMO_PASS`：密碼（建議 12 字以上）
-3. 按 **Add variable and deploy**
-- 換密碼：同一處把 `DEMO_PASS` 改掉即可
-- 沒設定時網站**公開瀏覽**、不需登入；要恢復登入就把兩個 Secret 加回來
-- 要取消某人的權限：更換 `DEMO_PASS`，再把新密碼告訴其他人
-
-### 回到舊版
-- Cloudflare：Deployments 分頁 → 選舊的部署 → Rollback
-- GitHub：`git revert` 或用舊 commit 的 `public/index.html` 覆蓋後推送
+## 部署
+- 部署於 Cloudflare Workers；推送到 `main` 後自動重新部署
 
 ## 平板 Demo
 - iPad：設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文（台灣），下載加強版語音
