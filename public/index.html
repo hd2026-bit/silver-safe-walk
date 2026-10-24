@@ -564,7 +564,7 @@ home(){
  ${officialAlert()}
  ${dk?`<div class="alert lv0" role="status" style="color:var(--cool);background:var(--cool-soft)"><span class="big-ic">${I.moon}</span><div><div class="lbl">${S.time===5?'清晨':'晚上'}・安全模式</div><p style="font-size:1.1em">天暗了，走亮的路</p></div></div>`:''}
  ${S.lv>=1||dk?careTip():''}
- <button class="big shade main" data-a="go:dest"><span class="ic">${I.walk}</span><span><b>我要去那裡</b><span class="icrow" aria-label="${dk?'路燈多、避開要小心的路口':'陰涼、可以休息、避開施工'}">${dk?I.lamp+I.walk+I.car:I.tree+I.seat+I.cone}</span><span class="bigsub">${dk?'走亮的路，避開要小心的路口':'挑好走、陰涼的路，路上可以休息'}</span></span></button>
+ <button class="big shade main" data-a="go:dest"><span class="ic">${I.walk}</span><span><b>我要去那裡</b><span class="icrow" aria-label="${dk?'路燈多、避開要小心的路口':'有遮蔭、可以休息、避開施工'}">${dk?I.lamp+I.walk+I.car:I.tree+I.seat+I.cone}</span><span class="bigsub">${dk?'走亮的路，避開要小心的路口':'挑好走、有遮蔭的路，路上可以休息'}</span></span></button>
  <div class="minor3">${sb('quick:wc',facDot('wc',1.8),'廁所')}${sb('quick:water',facDot('water',1.8),'喝水')}${dk?sb('call',`<span style="color:var(--cool);font-size:1.8em;display:inline-flex">${I.phone}</span>`,'家人'):sb('go:cool',facDot('cool',1.8),'舒適地點')}</div>
  <button class="linkbtn" data-a="settings">${I.gear} 設定</button>`;
 },
@@ -609,8 +609,8 @@ route(){
  if(c.type==='dest'){
   const a=stats(c.d.normal),b=stats(friendlyOf(c.d)),dk=isDark();
   const row=(lbl,va,vb,better)=>`<tr><th>${lbl}</th><td class="${better==='a'?'win':''}">${va}</td><td class="${better==='b'?'win':''}">${vb}</td></tr>`;
-  cmp=`<div class="seg"><button aria-pressed="${S.mode==='normal'}" data-a="mode:normal">最短<small>${recMode(c.d)==='normal'?'推薦 ✓':'一般地圖'}</small></button><button aria-pressed="${S.mode==='friendly'}" data-a="mode:friendly">${dk?I.lamp+' 安全':I.tree+' 陰涼'}<small>${recMode(c.d)==='friendly'?'推薦 ✓':'&nbsp;'}</small></button></div>
-  <table class="cmp"><tr><th></th><td style="color:var(--muted);font-weight:500">最短</td><td style="color:var(--muted);font-weight:500">${dk?'安全':'陰涼'}</td></tr>
+  cmp=`<div class="seg"><button aria-pressed="${S.mode==='normal'}" data-a="mode:normal">最短<small>${recMode(c.d)==='normal'?'推薦 ✓':'一般地圖'}</small></button><button aria-pressed="${S.mode==='friendly'}" data-a="mode:friendly">${dk?I.lamp+' 安全':I.tree+' 長者友善'}<small>${recMode(c.d)==='friendly'?'推薦 ✓':'&nbsp;'}</small></button></div>
+  <table class="cmp"><tr><th></th><td style="color:var(--muted);font-weight:500">最短</td><td style="color:var(--muted);font-weight:500">${dk?'安全':'長者友善'}</td></tr>
   ${row(I.walk+' 時間',a.min+' 分',b.min+' 分',a.min<b.min?'a':'b')}
   ${dk?row(I.moon+' 較暗',a.darkMin+' 分',b.darkMin+' 分',a.darkMin<b.darkMin?'a':b.darkMin<a.darkMin?'b':''):row(I.sun+' 曬太陽',a.sunMin+' 分',b.sunMin+' 分',a.sunMin<b.sunMin?'a':'b')}
   ${row(I.hazard+' 小心路口',a.hots.length+' 處',b.hots.length+' 處',a.hots.length<b.hots.length?'a':b.hots.length<a.hots.length?'b':'')}
@@ -687,7 +687,7 @@ function sheetHTML(){
   <p class="note">設定會記在這支手機上，下次打開不用重設。也可以請家人或據點志工幫忙設定。</p>
   <button class="go" data-a="close">好</button></div>`}
  if(S.sheet==='red')return `<div class="scrim" data-a="close"></div><div class="sheet" role="alertdialog" aria-label="紅色高溫資訊" style="background:var(--lv3-bg)"><h3 style="color:var(--lv3)">${I.hazard} 今天非常熱</h3>
-  <p style="margin:0;color:var(--ink);font-weight:700">中央氣象署發布紅色燈號（模擬）。請儘量待在室內；若一定要出門，走陰涼路線並多休息。</p>
+  <p style="margin:0;color:var(--ink);font-weight:700">中央氣象署發布紅色燈號（模擬）。請儘量待在室內；若一定要出門，選有遮蔭的路，並多休息。</p>
   <p class="note">這個視窗一天只出現一次。</p>
   <button class="go" style="background:var(--cool)" data-a="redcool">帶我去最近的涼爽地方</button>
   <button class="small" data-a="close">我知道了</button></div>`;
@@ -861,6 +861,7 @@ function renderPanel(){
   <button class="small" data-tab="method" style="min-height:48px">怎麼算的？看「方法」分頁 →</button></div>`;
  } else if(S.tab==='ver'){
   const V=[
+   ['1.23.1','10/24','用詞調整：路線比較改稱「長者友善」，路線說明一律改用「遮蔭」'],
    ['1.23','10/24','名稱改為「走這條，一路順！」。首頁改為「我要去那裡」一個主按鈕，下面是廁所、喝水、舒適地點（原納涼地點）；走路中按「我要休息一下」可把最近的廁所、飲水或座位加進路線，休息完回原路繼續走。100 日計畫更新'],
    ['1.15','10/23','「這里需要你」放進同一個專案與網址（/zheli/，同一組帳號密碼）；離線快取改為各頁分開存，避免互相覆蓋'],
    ['1.14','10/23','資料更新：人口改用 115 年 9 月；事故補到 2023–2025 三年（臺北市警察局明細）。門檻改用有出處的數值（超高齡 20%、樹冠覆蓋 40%、路口 76 公尺）；危險路口＝三年 ≥5 次（12 處，會提醒）、觀察路口＝3–4 次（103 處，只標示）。示範區只有 1 處觀察路口，信義路口危險路口改為示範情境（假設）。佐證、方法分頁全部更新'],
@@ -885,7 +886,7 @@ function renderPanel(){
    ['0.5','10/22','清晨、晚上不顯示高溫警示'],
    ['0.4','10/22','圖示優先＋每頁「唸給我聽」'],
    ['0.3','10/22','日夜模式：清晨、晚上改為安全優先；加入真實長者行人事故點位'],
-   ['0.2','10/21','初版互動原型：納涼地點、陰涼路線、廁所、飲水機']];
+   ['0.2','10/21','初版互動原型：納涼地點、路線、廁所、飲水機']];
   B.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">
   <p>目前版本：<b style="color:var(--ink)">${V[0][0]}</b>（2026/${V[0][1]}）。每次更新都保留舊版，可以回到任何一版。</p>
   <div class="tblwrap"><table class="dtbl" style="min-width:0"><thead><tr><th style="white-space:nowrap">版本</th><th style="white-space:nowrap">日期</th><th>內容</th></tr></thead><tbody>
