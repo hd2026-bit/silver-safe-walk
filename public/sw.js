@@ -1,5 +1,5 @@
 // 走這條，一路順！離線支援：有網路時一律拿最新版（網路優先），沒網路時用上次存下的版本
-const CACHE = 'zouzhetiao-v1.15';
+const CACHE = 'zouzhetiao-v1.24';
 // 只有首頁（走這條，一路順！）的導覽請求存成 ./index.html；/zheli/（這里需要你）等其他頁面照原網址存，避免互相覆蓋
 const isHome = (req) => req.mode === 'navigate' && ['/', '/index.html'].includes(new URL(req.url).pathname);
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
