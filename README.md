@@ -1,13 +1,13 @@
 # 走這條，一路順！（互動原型）
 
-「這里需要你」長出的第一個解方：長輩用 Web App 導航（不另做手機 App），**依天氣與時段，找最適合長輩走的路**：熱天找遮蔭、天暗走亮的路，並避開危險路口與施工；之後串接氣候資料，冷天、雨天也能提醒保暖、避雨。設計重點是數位安全：不當低頭族，靠語音提醒，不用一直看手機。市政 debug松 概念原型，示範區為臺北市大安區。
+給長輩用的 Web App 導航（不另做手機 App）：**依天氣與時段，找最適合長輩走的路**。熱天找遮蔭、天暗走亮的路，並避開危險路口與施工；走到一半想上廁所、喝水或休息，按一下就把最近的地點加進路線。之後串接氣候資料，冷天、雨天也能提醒保暖、避雨。設計重點是數位安全：不當低頭族，靠語音提醒，不用一直看手機。市政 debug松 概念原型，示範區為臺北市大安區。
 
 - 線上版：`https://silver-safe-walk.hondao2026.workers.dev`
-- 母體「這里需要你」：[hd2026-bit/zheli-needs-you](https://github.com/hd2026-bit/zheli-needs-you)；網站版也放在這裡的 `public/zheli/index.html`，網址加 `/zheli/`
 - 網頁：`public/index.html`（單一檔案，不需建置）
 - 伺服器：`src/worker.js`（道路施工資料轉送、安全標頭）
 - 分析程式：`analysis/`，用開放資料重現所有數字（見 `analysis/README.md`）
 - 版本：每一版都是一筆 commit；內容見 `CHANGELOG.md`
+- 相關專案：「這里需要你」臺北市 456 里高齡風險儀表板，本專案要解決的問題來自它的分析（[hd2026-bit/zheli-needs-you](https://github.com/hd2026-bit/zheli-needs-you)；網站版在 `public/zheli/index.html`，網址加 `/zheli/`）
 
 ## 目錄
 1. [要解決的問題](#要解決的問題)

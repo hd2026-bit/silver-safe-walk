@@ -248,7 +248,7 @@ body.app-mode .sim-strip{font-size:.62em;padding:4px 8px}
 
 <div class="intro">
   <h1>走這條，一路順！</h1>
-  <p id="toZheli" hidden style="margin:0 0 4px"><a href="/zheli/">← 母體：這里需要你（臺北市 456 里高齡風險）</a></p>
+  <p id="toZheli" hidden style="margin:0 0 4px"><a href="/zheli/">相關專案：這里需要你（臺北市 456 里高齡風險儀表板）→</a></p>
   <script>try{if(/workers\.dev$/.test(location.hostname))document.getElementById('toZheli').hidden=false}catch(e){}</script>
   <p><span class="sim-tag">市政 debug松 概念原型</span>　示範區：臺北市大安區。白天避曬、清晨與晚上自動改為安全優先。廁所、飲水機、涼適點、路燈、騎樓與長者行人事故取自開放資料；路線形狀、樹蔭時段、活動與天氣為模擬。</p>
 </div>
@@ -875,6 +875,7 @@ function renderPanel(){
   <button class="small" data-tab="method" style="min-height:48px">怎麼算的？看「方法」分頁 →</button></div>`;
  } else if(S.tab==='ver'){
   const V=[
+   ['1.25.4','10/24','簡介改以「走這條，一路順！」為主；「這里需要你」改為相關專案連結'],
    ['1.25.3','10/24','README 開頭與 App 說明改為不限季節：依天氣與時段找路，之後串接氣候資料提醒保暖、避雨'],
    ['1.25.2','10/24','README 前後文一致性修正：Web App 說法、補友善店家與產業局、紙本地圖改為後續推動、上線評估與 100 日計畫對齊'],
    ['1.25.1','10/24','README 新增「上線評估」：Web App 的優勢與限制、三階段時程與可能性'],
