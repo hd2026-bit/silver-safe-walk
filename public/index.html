@@ -325,6 +325,14 @@ const WATERS=[
  ['臺北市立圖書館總館',121.5383,25.0291,21,'週二至週六 08:30–21:00；週日、週一 09:00–17:00'],
  ['大安區公所',121.5345,25.0264,4,'週一至週五 08:30–17:30']
 ];
+// 2026-10-24 自 data.taipei 下載：臺北市友善店家清冊、臺北市提供飲水店家清冊（產業局），只取大安區示範範圍
+// [店名, 經度, 緯度, 友善廁所, 無障礙友善, 提供飲水]；店家廁所與飲水需在營業時間、先詢問店員
+const SHOPS=[["小隱茶庵 - 東門店",121.52556,25.035902,1,0,1],["馬叔餅舖",121.528395,25.036024,0,0,1],["古典美服飾-永康店",121.52964,25.030944,0,0,1],["老叢茶圃 - 永康店",121.530924,25.031943,0,0,1],["興華名茶",121.528747,25.033687,1,0,0],["來好雜貨舖",121.529222,25.032744,0,0,1],["丹迪旅店大安森林公園店",121.534623,25.033764,0,1,1],["晧雅日本生活百貨",121.529224,25.031269,0,0,1],["台灣一品 拉麵與刀削麵",121.529525,25.031697,0,0,1],["帕帕拉夏藝文中心",121.530319,25.030936,1,1,0],["雅緻人生中國古典服飾店",121.530357,25.030836,1,0,1],["大來小館-金華店",121.528447,25.02982,1,1,1],["大來小館-永康店",121.530186,25.033082,1,0,1],["鬍鬚張台北大安店",121.544381,25.033166,1,0,1],["鬍鬚張台北東門店",121.526944,25.0332,1,0,1],["微兜永康店",121.530682,25.032665,1,0,1],["跳舞山羊精品咖啡館",121.534549,25.025397,0,0,1],["沁園茶莊",121.529557,25.031876,1,0,0],["陶作坊",121.529456,25.032585,0,0,1],["銅樂時尚鍋物",121.528766,25.024709,0,1,1],["古早茶坊",121.529388,25.024408,0,0,1],["登陸土星土耳其咖啡",121.530801,25.028818,1,0,1],["Loving Hut 愛家國際餐飲 台北和平店",121.541702,25.025365,0,0,1],["Beautique美妝",121.539439,25.026606,0,0,1],["羅胖子熗鍋麵",121.545058,25.025364,1,0,1],["小剪日常",121.540679,25.033026,0,1,1],["雷諾瓦拼圖文化坊(師大店)",121.529736,25.023961,0,0,1],["騎士碁雞排專賣店",121.529161,25.024336,0,0,1],["兔Dreams兔子餐廳",121.534662,25.034545,0,0,1],["賈福廚房",121.541861,25.028365,0,0,1],["極膳",121.545027,25.035326,0,0,1],["京盛宇(永康概念店)",121.529224,25.032389,1,0,0],["N2 Coffee Bike",121.525543,25.035831,1,0,0],["貝倫坊",121.542918,25.023364,1,1,0],["小木屋鬆餅台北永康店",121.529831,25.032458,0,0,1],["果真有杏",121.529667,25.032551,0,0,1],["維格餅家永康門市",121.52996,25.032515,1,0,1],["框影咖啡",121.529086,25.033342,1,0,1]];
+// 廁所、飲水的候選地點：公有設施在前，友善店家另外標示
+// 列表取最近 4 個；至少保留 1 個公有設施（不用開口借、不受營業時間限制）
+function quickRows(k){const all=poolOf(k).map(x=>({...x,d:dist(START,x.ll)})).filter(x=>!(S.accOnly&&k==='wc'&&!x.acc)).sort((a,b)=>a.d-b.d);
+ let rows=all.slice(0,4);if(!rows.some(x=>!x.shop)){const pub=all.find(x=>!x.shop);if(pub)rows=rows.slice(0,3).concat([pub])}return rows}
+const poolOf=k=>k==='wc'?TOILETS.map(t=>({name:t[0],ll:[t[1],t[2]],acc:t[4],par:t[5],type:t[6]})).concat(SHOPS.filter(x=>x[3]).map(x=>({name:x[0],ll:[x[1],x[2]],acc:0,par:0,type:'友善店家',shop:1,accF:x[4]}))):WATERS.map(w=>({name:w[0],ll:[w[1],w[2]],cnt:w[3],open:w[4]})).concat(SHOPS.filter(x=>x[5]).map(x=>({name:x[0],ll:[x[1],x[2]],cnt:0,open:'營業時間',shop:1})));
 
 // 長者危險路口（analysis/03_accidents.py）：2023–2025 三年、76 公尺內、路名一致的長者行人事故件數
 // ≥5 件＝危險路口（語音提醒、路線避開）；3–4 件＝觀察路口（只在地圖標示，不出聲）
@@ -488,11 +496,13 @@ function facMinute(r,f){const st=stats(r);let best=1e9,acc=0,at=0;st.segs.forEac
 
 // 走路中「我要休息一下」：找離目前位置最近的廁所／飲水／可以坐的地方，加進路線（A → 停靠點 → B）
 const STOPK={wc:['我要上廁所','上完廁所'],water:['我要喝水','喝點水'],seat:['我要坐一下','坐下休息']};
-function nearStop(k,p){let pool;
- if(k==='wc')pool=TOILETS.map(t=>({k:'wc',name:t[0],ll:[t[1],t[2]],src:'real',acc:t[4],par:t[5]}));
- else if(k==='water')pool=WATERS.map(w=>({k:'water',name:w[0],ll:[w[1],w[2]],src:'real',cnt:w[3],open:w[4]})).concat(COOLS.filter(c=>c[8]).map(c=>({k:'water',name:c[0],ll:[c[2],c[3]],src:'real',open:c[4]})));
- else pool=(S.ctx.via||routeOf()).fac.filter(f=>f.k==='seat').concat(COOLS.filter(c=>c[7]).map(c=>({k:c[5]?'cool':'seat',name:c[0],ll:[c[2],c[3]],src:'real',open:c[4]})));
- const best=pool.map(x=>({...x,d:dist(p,x.ll)})).sort((a,b)=>a.d-b.d)[0];
+function nearStop(k,p,avoid){let pool;
+ if(k==='wc')pool=poolOf('wc').map(x=>({k:'wc',name:x.name,ll:x.ll,src:'real',acc:x.acc,par:x.par,shop:x.shop}));
+ else if(k==='water')pool=poolOf('water').map(x=>({k:'water',name:x.name,ll:x.ll,src:'real',cnt:x.cnt,open:x.open,shop:x.shop})).concat(COOLS.filter(c=>c[8]).map(c=>({k:'water',name:c[0],ll:[c[2],c[3]],src:'real',open:c[4]})));
+ else pool=(S.ctx.via||routeOf()).fac.filter(f=>f.k==='seat').concat(COOLS.filter(c=>c[7]).map(c=>({k:c[5]?'cool':'seat',name:/[-－]公廁$/.test(c[0])?c[0].replace(/[-－]公廁$/,'（有座位，旁邊有廁所）'):c[0],raw:c[0],ll:[c[2],c[3]],src:'real',open:c[4]})));
+ if(avoid)pool=pool.filter(x=>dist(x.ll,avoid.ll)>60); // 「坐一下」不要跟「上廁所」推同一個地方（60 公尺內視為同一處）
+ // 店家要開口借、受營業時間限制：距離加 80 公尺再比，差不多近時先推公有設施
+ const best=pool.map(x=>({...x,d:dist(p,x.ll)})).sort((a,b)=>(a.d+(a.shop?80:0))-(b.d+(b.shop?80:0)))[0];
  return best?{...best,min:Math.max(1,Math.round(best.d*1.3/WALK))}:null}
 function addStop(k){const r=routeOf(),i=S.step,st=stats(r),o=r.segs[i],c=nearStop(k,st.segs[i].from);if(!c)return null;
  const back=o.txt.startsWith('回到原來的路')?o.txt:'回到原來的路，'+o.txt;
@@ -513,7 +523,7 @@ function careTip(){
  else{ic=I.water;t='記得帶水'}
  return `<div class="care"><span class="big-ic" style="color:var(--cool);font-size:2em;display:inline-flex">${ic}</span><div><div class="lbl">APP 提醒</div><b style="font-size:1.1em">${t}</b></div></div>`}
 const facDot=(k,s)=>{const f=FAC[k];return `<span style="color:${f.c};font-size:${s||1.3}em;display:inline-flex" aria-hidden="true">${I[f.ic]}</span>`};
-function facDetail(f){if(f.k==='wc')return `${f.name}・${f.acc?`無障礙 ${f.acc} 座`:'無無障礙座'}${f.par?`・親子 ${f.par}`:''}`;if(f.k==='water')return `${f.name}${f.cnt?`・飲水機 ${f.cnt} 台`:'・飲水'}`;return f.name}
+function facDetail(f){if(f.shop)return `${f.name}・友善店家（${f.k==='wc'?'借廁所':'可以裝水'}，先問店員）`;if(f.k==='wc')return `${f.name}・${f.acc?`無障礙 ${f.acc} 座`:'無無障礙座'}${f.par?`・親子 ${f.par}`:''}`;if(f.k==='water')return `${f.name}${f.cnt?`・飲水機 ${f.cnt} 台`:'・飲水'}`;return f.name}
 
 function mapSVG(r,opts){
  opts=opts||{};
@@ -596,14 +606,13 @@ dest(){
 },
 quick(){
  const k=S.ctx.k;
- const pool=k==='wc'?TOILETS.map(t=>({name:t[0],ll:[t[1],t[2]],acc:t[4],par:t[5],type:t[6]})):WATERS.map(w=>({name:w[0],ll:[w[1],w[2]],cnt:w[3],open:w[4]}));
- const rows=pool.map(x=>({...x,d:dist(START,x.ll)})).sort((a,b)=>(S.accOnly&&k==='wc'?(b.acc>0)-(a.acc>0):0)||a.d-b.d).filter(x=>!(S.accOnly&&k==='wc'&&!x.acc)).slice(0,4);
- S.say=rows.length?`最近的${k==='wc'?'廁所':'飲水機'}在${rows[0].name}，走${Math.max(1,Math.round(rows[0].d*1.3/WALK))}分鐘。`:'';
- return `${header(k==='wc'?'最近的廁所':'最近的飲水機')}
+ const rows=quickRows(k);
+ S.say=rows.length?`最近${k==='wc'?'可以上廁所':'可以喝水'}的地方是${rows[0].name}${rows[0].shop?'，是友善店家，進去先問店員':''}，走${Math.max(1,Math.round(rows[0].d*1.3/WALK))}分鐘。`:'';
+ return `${header(k==='wc'?'最近的廁所':'最近可以喝水')}
  ${k==='wc'?`<div class="seg"><button aria-pressed="${!S.accOnly}" data-a="acc:0">全部</button><button aria-pressed="${!!S.accOnly}" data-a="acc:1">只看無障礙</button></div>`:''}
  ${mapSVG(null,{allWc:k==='wc'})}
- ${rows.map((x,i)=>`<button class="card" data-a="qgo:${i}" style="min-height:80px">${facDot(k,2)}<span style="min-width:0;flex:1"><h3>${x.name}</h3><span class="meta">${k==='wc'?`<span class="chip">${x.type}</span><span class="chip">${x.acc?`無障礙 ${x.acc} 座`:'無無障礙座'}</span>`:`<span class="chip">${x.cnt} 台</span><span class="chip">${x.open}</span>`}${src('real')}</span></span><span class="walk"><b>${Math.max(1,Math.round(x.d*1.3/WALK))}</b><small>分鐘</small></span></button>`).join('')}
- <p class="note">${k==='wc'?'臺北市公廁點位資訊（環保局）。資料沒有開放時間，夜間是否可用需另外確認。':'臺北市公共場所飲水機資訊（環保局）。資料沒有故障狀態欄位。'}</p>`;
+ ${rows.map((x,i)=>`<button class="card" data-a="qgo:${i}" style="min-height:80px">${facDot(k,2)}<span style="min-width:0;flex:1"><h3>${x.name}</h3><span class="meta">${x.shop?`<span class="chip">友善店家</span><span class="chip">${k==='wc'?'借廁所，先問店員':'可以裝水，先問店員'}</span><span class="chip">營業時間</span>`:k==='wc'?`<span class="chip">${x.type}</span><span class="chip">${x.acc?`無障礙 ${x.acc} 座`:'無無障礙座'}</span>`:`<span class="chip">${x.cnt} 台</span><span class="chip">${x.open}</span>`}${src('real')}</span></span><span class="walk"><b>${Math.max(1,Math.round(x.d*1.3/WALK))}</b><small>分鐘</small></span></button>`).join('')}
+ <p class="note">${k==='wc'?'臺北市公廁點位資訊（環保局）＋臺北市友善店家清冊「友善廁所」（產業局）。公廁資料沒有開放時間；店家只在營業時間，請先問店員。':'臺北市公共場所飲水機資訊（環保局）＋臺北市提供飲水店家清冊（產業局）。飲水機資料沒有故障狀態；店家只在營業時間，請先問店員。'}</p>`;
 },
 route(){
  const c=S.ctx,r=routeOf(),st=stats(r);
@@ -696,10 +705,10 @@ function sheetHTML(){
   <button class="go" style="background:var(--cool)" data-a="redcool">帶我去最近的涼爽地方</button>
   <button class="small" data-a="close">我知道了</button></div>`;
  if(S.sheet==='rest'){const st=stats(routeOf()),p=st.segs[S.step].from;
-  const opts=Object.keys(STOPK).map(k=>({k,t:STOPK[k][0],c:nearStop(k,p)})).filter(o=>o.c);
+  const opts=Object.keys(STOPK).map(k=>({k,t:STOPK[k][0],c:nearStop(k,p,k==='seat'?nearStop('wc',p):null)})).filter(o=>o.c);
   return `<div class="scrim" data-a="close"></div><div class="sheet" role="dialog" aria-label="我要休息一下"><h3>${facDot('seat',1.2)} 我要休息一下</h3>
   <p class="note" style="margin:0">按一個，幫你先繞過去，休息完再繼續去 ${destName()}。</p>
-  ${opts.map(o=>`<button class="card" data-a="via:${o.k}" style="min-height:84px">${facDot(o.k,2)}<span style="min-width:0;flex:1"><h3>${o.t}</h3><span class="meta"><span class="chip">${o.c.name}</span>${src(o.c.src)}</span></span><span class="walk"><b>${o.c.min}</b><small>分鐘</small></span></button>`).join('')}
+  ${opts.map(o=>`<button class="card" data-a="via:${o.k}" style="min-height:84px">${facDot(o.k,2)}<span style="min-width:0;flex:1"><h3>${o.t}</h3><span class="meta"><span class="chip">${o.c.name}</span>${o.c.shop?'<span class="chip">友善店家，先問店員</span>':''}${src(o.c.src)}</span></span><span class="walk"><b>${o.c.min}</b><small>分鐘</small></span></button>`).join('')}
   <p class="note">若覺得頭暈、噁心或很喘，請先停下，並打電話給家人或 119。</p>
   <button class="small" data-a="close">先不用，繼續走</button></div>`}
  if(S.sheet==='call')return `<div class="scrim" data-a="close"></div><div class="sheet" role="dialog" aria-label="打給家人"><h3>${I.phone} 打給家人</h3>
@@ -730,6 +739,7 @@ const DATA=[
  ['騎樓','臺北市騎樓及人行道整平範圍（建管處）','https://cmo.gov.taipei/cp.aspx?n=966ABAC5910F4F60','real','已放入：示範區 40 處整平騎樓（2026-09），白天全時段算有遮蔭。只含整平過的騎樓；騎樓被機車、攤販占用的情形資料沒有'],
  ['捷運出入口（地標）','臺北捷運車站出入口座標、無障礙電梯與坡道座標（臺北捷運公司）','https://data.gov.tw/dataset/128428','real','已放入地標指路：轉彎處 40 公尺內有出口才使用。示範路線只有信義路口（東門站 5 號出口，35 公尺）符合；其他轉彎處最近出口在 170 公尺以上，維持以路名指路'],
  ['路口綠燈秒數','臺北市號誌路口時制計畫（交通局）','','est','2,807 個號誌路口附時制表；需另量斑馬線長度，列為第二階段'],
+ ['友善店家（廁所、飲水）','臺北市友善店家清冊、臺北市提供飲水店家清冊（產業局）','https://data.taipei/dataset/detail?id=d807396c-e41f-4005-be42-0160280783a1','real','已放入（2026-10-24）：示範區 38 家，17 家借廁所、32 家可以裝水。加進「最近的廁所／可以喝水」與「我要休息一下」，標示「友善店家，先問店員」。這是產業局給觀光客的友善店家計畫，不是專為長輩設計，沒有座位資料'],
  ['涼適點','臺北市涼適點（公有 720、民間 28）','https://data.gov.tw/dataset/175067','real','已放入：示範區 16 處；有冷氣、廁所、座位、飲水、無障礙欄位。3 筆座標格式錯誤已修正或排除'],
  ['合作涼爽點','環境部 Cool Map 合作涼爽點（便利商店、超市）','https://data.gov.tw/dataset/177893','real','臺北市 766 處，示範區 26 處。環境部全國資料下載預設只給 1,000 筆，需改參數才能取得完整資料'],
  ['關懷據點、活動時間','社會局關懷據點／長青學苑','','sim','課表無開放資料，需局處提供'],
@@ -866,6 +876,7 @@ function renderPanel(){
  } else if(S.tab==='ver'){
   const V=[
    ['1.23.1','10/24','用詞調整：路線比較改稱「長者友善」，路線說明一律改用「遮蔭」'],
+   ['1.25','10/24','加入友善店家：臺北市友善店家清冊（友善廁所）與提供飲水店家清冊（產業局），示範區 38 家，放進「最近的廁所／可以喝水」與「我要休息一下」。「我要坐一下」不再和「上廁所」推同一個地方（60 公尺內視為同一處），廁所與喝水先推公有設施，名稱帶「-公廁」的涼適點改顯示「（有座位，旁邊有廁所）」'],
    ['1.24','10/24','主題色改為弘道橘（#E33710、#F29D86、#FBDAC8，暖灰文字）；地圖上的遮蔭綠、路燈藍與警示色不變'],
    ['1.23','10/24','名稱改為「走這條，一路順！」。首頁改為「我要去那裡」一個主按鈕，下面是廁所、喝水、舒適地點（原納涼地點）；走路中按「我要休息一下」可把最近的廁所、飲水或座位加進路線，休息完回原路繼續走。100 日計畫更新'],
    ['1.15','10/23','「這里需要你」放進同一個專案與網址（/zheli/，同一組帳號密碼）；離線快取改為各頁分開存，避免互相覆蓋'],
@@ -919,10 +930,8 @@ phone.addEventListener('click',e=>{
  else if(a==='quick'){S.ctx={type:'qlist',k:v};S.accOnly=false;go('quick')}
  else if(a==='acc'){S.accOnly=v==='1';render()}
  else if(a==='qgo'){const k=S.ctx.k;
-   const pool=k==='wc'?TOILETS.map(t=>({name:t[0],ll:[t[1],t[2]],acc:t[4],par:t[5],type:t[6]})):WATERS.map(w=>({name:w[0],ll:[w[1],w[2]],cnt:w[3],open:w[4]}));
-   const rows=pool.map(x=>({...x,d:dist(START,x.ll)})).sort((x,y)=>x.d-y.d).filter(x=>!(S.accOnly&&k==='wc'&&!x.acc));
-   const t=rows[+v];
-   const f=k==='wc'?{k:'wc',name:t.name,ll:t.ll,src:'real',acc:t.acc,par:t.par}:{k:'water',name:t.name,ll:t.ll,src:'real',cnt:t.cnt};
+   const t=quickRows(k)[+v];
+   const f=k==='wc'?{k:'wc',name:t.name,ll:t.ll,src:'real',acc:t.acc,par:t.par,shop:t.shop}:{k:'water',name:t.name,ll:t.ll,src:'real',cnt:t.cnt,shop:t.shop};
    const mid=[t.ll[0],START[1]];
    S.ctx={type:'quick',k,target:t,route:{segs:[{to:mid,sh:{9:1,13:0,17:1},txt:'沿路直走'},{to:t.ll,sh:{9:0,13:1,17:0},txt:'轉彎後直走，抵達'}],fac:[f]}};
    go('route')}
