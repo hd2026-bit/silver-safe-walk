@@ -1,0 +1,5 @@
+data/
+output/*.pkl
+output/*.gpkg
+output/sidewalk_shade.geojson
+__pycache__/

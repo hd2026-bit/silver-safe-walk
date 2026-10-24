@@ -1,0 +1,17 @@
+{
+  "name": "走這條！求最大陰影面積",
+  "short_name": "走這條！",
+  "description": "長輩走路的好幫手：白天找陰涼，晚上走亮的路，附近的涼適點、廁所、飲水機。",
+  "lang": "zh-Hant-TW",
+  "start_url": "./?app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#1f6b4f",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
