@@ -4,7 +4,7 @@
 
 - 網頁：`public/index.html`（單一檔案，不需建置）
 - 母體「這里需要你」：獨立專案 [hd2026-bit/zheli-needs-you](https://github.com/hd2026-bit/zheli-needs-you)；網站版放在這裡的 `public/zheli/index.html`（從該專案的 `public/index.html` 複製），網址加 `/zheli/`
-- 驗證：`src/worker.js`，所有請求先檢查帳號密碼才回傳網頁（伺服器端 HTTP Basic Auth）
+- 驗證：`src/worker.js`，帳號密碼為選用：Cloudflare 沒設定 `DEMO_USER`、`DEMO_PASS` 時公開瀏覽；兩個都設定才需登入（伺服器端 HTTP Basic Auth）
 - 分析程式：`analysis/`，用開放資料重現所有數字（見 `analysis/README.md`）
 - 版本：每一版都是一筆 commit，可隨時回到舊版；版本內容見 `CHANGELOG.md`
 
@@ -12,7 +12,7 @@
 - 網址：`https://silver-safe-walk.TBD.workers.dev`
 - GitHub 推送到 `main` 後，Cloudflare 會自動重新部署
 
-### 設定／更換帳號密碼
+### 設定／更換帳號密碼（選用）
 1. Cloudflare → Workers & Pages → silver-safe-walk → **Settings**，在頁面**最上方**的 **Variables and Secrets** 按 **+ Add**
    （出現「Add environment variable」視窗才是對的）
    ⚠️ 不要設在 **Builds** 卡片裡的 Variables and secrets，那是建置用的，網站讀不到
@@ -21,7 +21,7 @@
    - `DEMO_PASS`：密碼（建議 12 字以上）
 3. 按 **Add variable and deploy**
 - 換密碼：同一處把 `DEMO_PASS` 改掉即可
-- 沒設定時網站一律回「暫不開放」（503），不會意外公開
+- 沒設定時網站**公開瀏覽**、不需登入；要恢復登入就把兩個 Secret 加回來
 - 要取消某人的權限：更換 `DEMO_PASS`，再把新密碼告訴其他人
 
 ### 回到舊版
