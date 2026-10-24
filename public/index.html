@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="走這條，一路順！">
-<meta name="theme-color" content="#e33710">
+<meta name="theme-color" content="#1f6b4f">
 <link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials">
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}</style>
@@ -19,14 +19,12 @@
 <style>
 /* Layout: 手機框 + 旁邊分頁面板（展示／資料來源／落地計畫）；大安區示範，點位用開放資料座標，路線與活動為模擬 */
 :root{
-  /* 弘道主題色（hondao.org.tw style.css）：#E33710 主色、#F29D86、#ED7D55、#FBDAC8、#3E3A39、#796F66 */
-  --bg:#faf7f3; --surface:#ffffff; --ink:#3e3a39; --muted:#6f655c;
-  --shade:#e33710; --shade-soft:#fbdac8; --brand-ink:#b8360f; --brand-2:#f29d86;
-  --leaf:#1f6b4f; --leaf-soft:#dcefe5;
+  --bg:#eef2ee; --surface:#ffffff; --ink:#1b2a24; --muted:#56655e;
+  --shade:#1f6b4f; --shade-soft:#dcefe5;
   --cool:#1c6a86; --cool-soft:#dbeef5;
   --sun:#b45309; --sun-soft:#fbead3;
   --social:#7a3e8e; --social-soft:#f1e3f5;
-  --line:#e6d6ca; --frame:#3e3a39;
+  --line:#c9d6cf; --frame:#22302a;
   --lv0:#3b7a57; --lv1:#a16207; --lv2:#c2410c; --lv3:#b91c1c;
   --lv1-bg:#fdf3c7; --lv2-bg:#fde3cf; --lv3-bg:#fbdada;
   --map-bg:#f3f0e6; --map-road:#ffffff; --map-road-edge:#d8d2c0; --map-park:#cfe5d3; --map-label:#7c7663;
@@ -34,23 +32,21 @@
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#1a1614; --surface:#241e1b; --ink:#f4eee9; --muted:#bdb0a6;
-  --shade:#f29d86; --shade-soft:#43271d; --brand-ink:#f29d86; --brand-2:#ed7d55;
-  --leaf:#5fc29a; --leaf-soft:#1d3a2e; --cool:#6cc3e0; --cool-soft:#173440;
+  --bg:#121815; --surface:#1b2420; --ink:#eef4f0; --muted:#a7b6ae;
+  --shade:#5fc29a; --shade-soft:#1d3a2e; --cool:#6cc3e0; --cool-soft:#173440;
   --sun:#f2a24b; --sun-soft:#3a2a16; --social:#d59be6; --social-soft:#33213b;
-  --line:#45372f; --frame:#0f0c0b;
+  --line:#33433b; --frame:#0a0e0c;
   --lv0:#6fc193; --lv1:#e8c04a; --lv2:#f59a5b; --lv3:#f27474;
   --lv1-bg:#3a3214; --lv2-bg:#3d2414; --lv3-bg:#401a1a;
-  --map-bg:#26201c; --map-road:#3e3530; --map-road-edge:#302824; --map-park:#24402f; --map-label:#a89c92; color-scheme:dark}}
+  --map-bg:#202a25; --map-road:#3a4640; --map-road-edge:#2c3832; --map-park:#24402f; --map-label:#9aa79f; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#1a1614; --surface:#241e1b; --ink:#f4eee9; --muted:#bdb0a6;
-  --shade:#f29d86; --shade-soft:#43271d; --brand-ink:#f29d86; --brand-2:#ed7d55;
-  --leaf:#5fc29a; --leaf-soft:#1d3a2e; --cool:#6cc3e0; --cool-soft:#173440;
+  --bg:#121815; --surface:#1b2420; --ink:#eef4f0; --muted:#a7b6ae;
+  --shade:#5fc29a; --shade-soft:#1d3a2e; --cool:#6cc3e0; --cool-soft:#173440;
   --sun:#f2a24b; --sun-soft:#3a2a16; --social:#d59be6; --social-soft:#33213b;
-  --line:#45372f; --frame:#0f0c0b;
+  --line:#33433b; --frame:#0a0e0c;
   --lv0:#6fc193; --lv1:#e8c04a; --lv2:#f59a5b; --lv3:#f27474;
   --lv1-bg:#3a3214; --lv2-bg:#3d2414; --lv3-bg:#401a1a;
-  --map-bg:#26201c; --map-road:#3e3530; --map-road-edge:#302824; --map-park:#24402f; --map-label:#a89c92; color-scheme:dark}
+  --map-bg:#202a25; --map-road:#3a4640; --map-road-edge:#2c3832; --map-park:#24402f; --map-label:#9aa79f; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
@@ -94,8 +90,8 @@ button:disabled{opacity:.45;cursor:default}
 .big b{display:block;font-family:var(--f-display);font-weight:400;font-size:1.5em}
 .big span{font-size:.86em}
 .big.cool{background:var(--cool)} .big.shade{background:var(--shade)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .big,:root:not([data-theme="light"]) .go,:root:not([data-theme="light"]) .rest,:root:not([data-theme="light"]) .spk{color:#1a1614}}
-:root[data-theme="dark"] .big,:root[data-theme="dark"] .go,:root[data-theme="dark"] .rest,:root[data-theme="dark"] .spk{color:#1a1614}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .big,:root:not([data-theme="light"]) .go,:root:not([data-theme="light"]) .rest,:root:not([data-theme="light"]) .spk{color:#0e1512}}
+:root[data-theme="dark"] .big,:root[data-theme="dark"] .go,:root[data-theme="dark"] .rest,:root[data-theme="dark"] .spk{color:#0e1512}
 .minor{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .minor3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .minor3 .small{flex-direction:column;gap:4px;min-height:92px;font-size:1.05em;padding:6px 4px;line-height:1.2}
@@ -117,7 +113,7 @@ button:disabled{opacity:.45;cursor:default}
 .walk{margin-left:auto;text-align:center;flex:none;font-variant-numeric:tabular-nums}
 .walk b{font-size:1.5em;display:block;line-height:1}
 .walk small{font-size:.72em;color:var(--muted)}
-.src-real{background:var(--leaf-soft);color:var(--leaf);font-weight:700}
+.src-real{background:var(--shade-soft);color:var(--shade);font-weight:700}
 .src-est{background:var(--sun-soft);color:var(--sun);font-weight:700}
 .src-sim{background:var(--bg);color:var(--muted);border:1px dashed var(--muted)}
 .src-na{background:var(--bg);color:var(--muted);border:1px dotted var(--muted)}
@@ -125,7 +121,7 @@ button:disabled{opacity:.45;cursor:default}
 
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .seg button{border:2px solid var(--line);background:var(--surface);border-radius:14px;min-height:64px;font-weight:700;line-height:1.25;padding:6px}
-.seg button[aria-pressed="true"]{border-color:var(--shade);background:var(--shade-soft);color:var(--brand-ink)}
+.seg button[aria-pressed="true"]{border-color:var(--shade);background:var(--shade-soft);color:var(--shade)}
 .seg small{display:block;font-weight:500;font-size:.76em;color:var(--muted)}
 .map{border-radius:18px;overflow:hidden;border:2px solid var(--line);background:var(--map-bg)}
 .map>svg{display:block;width:100%;height:auto}
@@ -135,7 +131,7 @@ button:disabled{opacity:.45;cursor:default}
 .cmp th,.cmp td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .cmp th{font-weight:500;color:var(--muted);width:30%}
 .cmp td{font-weight:700;font-variant-numeric:tabular-nums}
-.cmp .win{color:var(--leaf)}
+.cmp .win{color:var(--shade)}
 .summary{display:flex;flex-wrap:wrap;gap:8px}
 .summary .chip{font-size:.85em;padding:4px 10px;background:var(--surface);border:1.5px solid var(--line)}
 .timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
@@ -153,7 +149,7 @@ details.why summary{font-weight:700;cursor:pointer;min-height:36px;display:flex;
 .sticky{position:sticky;bottom:-20px;background:linear-gradient(transparent,var(--surface) 30%);padding-top:12px;margin-top:auto}
 
 .navcard{border-radius:22px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
-.navcard.sh{background:var(--leaf-soft)} .navcard.ex{background:var(--sun-soft)}
+.navcard.sh{background:var(--shade-soft)} .navcard.ex{background:var(--sun-soft)}
 .arrow{width:104px;height:104px}
 .navcard h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.45em;text-wrap:balance}
 .navcard .dist{font-size:1.1em;font-weight:700;font-variant-numeric:tabular-nums}
@@ -189,7 +185,7 @@ details.why summary{font-weight:700;cursor:pointer;min-height:36px;display:flex;
 .panel h4{margin:0 0 6px;font-size:.8rem;letter-spacing:.06em;color:var(--muted)}
 .opts{display:flex;flex-wrap:wrap;gap:6px}
 .opts button{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 12px;font-size:.9rem}
-.opts button[aria-pressed="true"]{border-color:var(--shade);background:var(--shade-soft);color:var(--brand-ink);font-weight:700}
+.opts button[aria-pressed="true"]{border-color:var(--shade);background:var(--shade-soft);color:var(--shade);font-weight:700}
 .panel p{margin:0;font-size:.86rem;color:var(--muted);line-height:1.6}
 .panel ol,.panel ul{margin:0;padding-left:1.2em;font-size:.88rem;line-height:1.65}
 .panel li+li{margin-top:2px}
@@ -223,7 +219,7 @@ body.app-mode .sticky{bottom:-20px}
 body.app-mode .sim-strip{font-size:.62em;padding:4px 8px}
 .fsrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .fsrow button{min-height:56px;border:2px solid var(--line);background:var(--surface);border-radius:14px;font-weight:700}
-.fsrow button[aria-pressed="true"]{border-color:var(--shade);background:var(--shade-soft);color:var(--brand-ink)}
+.fsrow button[aria-pressed="true"]{border-color:var(--shade);background:var(--shade-soft);color:var(--shade)}
 /* 手機模式：只顯示 App；說明與控制面板收進上方橫條的按鈕 */
 .sim-open,.panel-close,.panel-scrim,.sim-short{display:none}
 @media (max-width:600px){.sim-short{display:inline}}
@@ -405,7 +401,7 @@ const PLACES=[
   act:['15:00 樂齡講座（模擬）'],open:WATERS[0][4],
   route:{segs:[{to:[121.5335,25.0318],sh:{9:1,13:1,17:0},txt:'沿巷子往東，走到新生南路'},{to:[121.5352,25.0299],sh:{9:1,13:1,17:1},txt:'過新生南路，走進大安森林公園'},{to:[121.5374,25.0289],sh:{9:1,13:1,17:1},txt:'沿園內林蔭步道往東南'},{to:[121.5383,25.0291],sh:{9:0,13:0,17:1},txt:'過建國南路，抵達圖書館'}],
    fac:[seatSim([121.5345,25.0306],'園內座椅'),tw('大安森林公園'),tw('大安森林公園地下停車場'),wt('臺北市立圖書館總館')]}},
- {id:'park',n:'大安森林公園',sub:'大樹遮蔭・座椅・公廁',ll:[121.5352,25.0299],src:'real',kind:'shade',hue:'var(--leaf-soft)',
+ {id:'park',n:'大安森林公園',sub:'大樹遮蔭・座椅・公廁',ll:[121.5352,25.0299],src:'real',kind:'shade',hue:'var(--shade-soft)',
   act:[],open:'全天開放',
   route:{segs:[{to:[121.5335,25.0318],sh:{9:1,13:1,17:0},txt:'沿巷子往東，走到新生南路'},{to:[121.5352,25.0299],sh:{9:1,13:1,17:1},txt:'過新生南路，進入公園'}],fac:[seatSim([121.5345,25.0306],'園內座椅'),tw('大安森林公園')]}}
 ];
@@ -536,13 +532,13 @@ function mapSVG(r,opts){
   else{const x=P(rd[1],0)[0];g+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}" stroke="var(--map-road-edge)" stroke-width="9"/><line x1="${x}" y1="0" x2="${x}" y2="${H}" stroke="var(--map-road)" stroke-width="6"/><text x="${x+3}" y="${H-6}" font-size="9" fill="var(--map-label)">${rd[2]}</text>`}});
  const dk0=isDark();
  if(dk0)LAMPS.forEach(l=>{const [x,y]=P(l[0],l[1]);if(x>-2&&x<W+2&&y>-2&&y<H+2)g+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.3" fill="var(--sun)" opacity=".6"/>`});
- else ARCS.forEach(r=>{g+=`<polygon points="${r.map(ll=>P(ll[0],ll[1]).map(v=>v.toFixed(1)).join(',')).join(' ')}" fill="var(--leaf)" opacity=".35"/>`});
+ else ARCS.forEach(r=>{g+=`<polygon points="${r.map(ll=>P(ll[0],ll[1]).map(v=>v.toFixed(1)).join(',')).join(' ')}" fill="var(--shade)" opacity=".35"/>`});
  WORKS.forEach(w=>w.g.forEach(pt=>{const pts=pt.c.map(ll=>P(ll[0],ll[1]).map(v=>v.toFixed(1)).join(',')).join(' ');g+=pt.k==='p'?`<polygon points="${pts}" fill="var(--lv2)" fill-opacity=".35" stroke="var(--lv2)" stroke-width="1.5" stroke-dasharray="3 2"/>`:`<polyline points="${pts}" fill="none" stroke="var(--lv2)" stroke-width="3" stroke-dasharray="3 2" opacity=".8"/>`}));
  // all toilets faint
  if(opts.allWc)TOILETS.forEach(t=>{const [x,y]=P(t[1],t[2]);g+=`<circle cx="${x}" cy="${y}" r="3" fill="var(--muted)" opacity=".45"/>`});
  const dk=isDark();
  const drawRoute=(rt,ghost)=>{const st=stats(rt);let s='';st.segs.forEach((sg,i)=>{const on=dk?sg.lit:shOn(sg);const active=cur()==='nav'&&i===S.step&&!ghost;
-  s+=`<polyline points="${pt(sg.from)} ${pt(sg.to)}" fill="none" stroke="${ghost?'var(--muted)':dk?(on?'var(--cool)':'var(--muted)'):(on?'var(--leaf)':'var(--sun)')}" stroke-width="${ghost?4:active?11:8}" stroke-linecap="round" ${ghost?'stroke-dasharray="1 7" opacity=".7"':on?'':'stroke-dasharray="2 13"'} />`;
+  s+=`<polyline points="${pt(sg.from)} ${pt(sg.to)}" fill="none" stroke="${ghost?'var(--muted)':dk?(on?'var(--cool)':'var(--muted)'):(on?'var(--shade)':'var(--sun)')}" stroke-width="${ghost?4:active?11:8}" stroke-linecap="round" ${ghost?'stroke-dasharray="1 7" opacity=".7"':on?'':'stroke-dasharray="2 13"'} />`;
   if(sg.hz&&!ghost){const m=P((sg.from[0]+sg.to[0])/2,(sg.from[1]+sg.to[1])/2);s+=`<g transform="translate(${m[0]-11},${m[1]-26})"><rect width="22" height="22" rx="5" fill="var(--lv2)"/><g transform="translate(3,3)" style="color:#fff">${I.hazard.replace('width="1em" height="1em"','width="16" height="16"')}</g></g>`}});return s};
  HOTS.forEach(h=>{const [x,y]=P(h.ll[0],h.ll[1]),d=h.n>=DANGER_N,z=d?8:6;g+=`<g transform="translate(${x},${y})"><rect x="-${z}" y="-${z}" width="${2*z}" height="${2*z}" rx="3" transform="rotate(45)" fill="${hotLv(h).c}" stroke="var(--surface)" stroke-width="2"/><text y="${d?4.5:3.5}" font-size="${d?12:9}" font-weight="900" text-anchor="middle" fill="#fff">!</text></g>`});
  if(opts.ghost)g+=drawRoute(opts.ghost,true);
@@ -555,7 +551,7 @@ function mapSVG(r,opts){
  const [mx,my]=P(me[0],me[1]);g+=`<circle cx="${mx}" cy="${my}" r="9" fill="var(--cool)" stroke="#fff" stroke-width="3.5"/>`;
  if(cur()!=='nav')g+=`<text x="${mx-6}" y="${my+22}" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">你在這</text>`;
  return `<div class="map"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="大安區路線示意圖">${g}</svg>
-  <div class="legend">${dk?'<span><i style="border-top:6px solid var(--cool)"></i>路燈較多</span><span><i style="border-top:6px dotted var(--muted)"></i>較暗</span><span><b style="color:var(--sun)">•</b> 路燈（2017 資料）</span>':'<span><i style="border-top:6px solid var(--leaf)"></i>有遮蔭</span><span><i style="border-top:6px dotted var(--sun)"></i>曝曬</span><span><b style="color:var(--leaf);opacity:.6">■</b> 整平騎樓</span>'}<span><b style="color:var(--lv2)">▨</b> 今日施工</span><span><b style="color:var(--lv1)">◆</b> 觀察路口（地圖標示）</span><span><b style="color:var(--lv3)">◆</b> 危險路口</span>${opts.ghost?'<span><i style="border-top:4px dotted var(--muted)"></i>一般地圖路線</span>':''}<span>點位為真實座標，道路簡化示意</span></div></div>`;
+  <div class="legend">${dk?'<span><i style="border-top:6px solid var(--cool)"></i>路燈較多</span><span><i style="border-top:6px dotted var(--muted)"></i>較暗</span><span><b style="color:var(--sun)">•</b> 路燈（2017 資料）</span>':'<span><i style="border-top:6px solid var(--shade)"></i>有遮蔭</span><span><i style="border-top:6px dotted var(--sun)"></i>曝曬</span><span><b style="color:var(--shade);opacity:.6">■</b> 整平騎樓</span>'}<span><b style="color:var(--lv2)">▨</b> 今日施工</span><span><b style="color:var(--lv1)">◆</b> 觀察路口（地圖標示）</span><span><b style="color:var(--lv3)">◆</b> 危險路口</span>${opts.ghost?'<span><i style="border-top:4px dotted var(--muted)"></i>一般地圖路線</span>':''}<span>點位為真實座標，道路簡化示意</span></div></div>`;
 }
 
 // 官方涼適點（臺北市＋環境部 Cool Map）：依直線距離 ×1.3 估步行時間，與廁所、飲水機相同
@@ -637,7 +633,7 @@ route(){
  S.say=`去${name}，走${st.min}分鐘。${isDark()?(st.darkMin?'天暗了，有一段路燈比較少，慢慢走。':'天暗了，這條路一路都有路燈。'):(st.shadePct>=50?'大部分有遮蔭。':'有些路段會曬。')}${st.hots.length?'路上有一個要注意的路口，小心轉彎車。':''}準備好就按開始走。`;
  return `${header('去 '+name)}
  ${cmp}
- <div class="summary"><span class="chip">${I.walk} ${st.min} 分・${st.tot} 公尺</span>${isDark()?`<span class="chip" style="color:var(--cool)">${I.lamp} 沿路路燈 ${st.lampN} 盞・亮的路段 ${st.litPct}% ${src('real')}</span>`:`<span class="chip" style="color:var(--leaf)">${I.tree} 遮蔭約 ${st.shadePct}% ${src('est')}</span>${st.arcM?`<span class="chip" style="color:var(--leaf)">騎樓約 ${st.arcM} 公尺 ${src('real')}</span>`:''}`}</div>
+ <div class="summary"><span class="chip">${I.walk} ${st.min} 分・${st.tot} 公尺</span>${isDark()?`<span class="chip" style="color:var(--cool)">${I.lamp} 沿路路燈 ${st.lampN} 盞・亮的路段 ${st.litPct}% ${src('real')}</span>`:`<span class="chip" style="color:var(--shade)">${I.tree} 遮蔭約 ${st.shadePct}% ${src('est')}</span>${st.arcM?`<span class="chip" style="color:var(--shade)">騎樓約 ${st.arcM} 公尺 ${src('real')}</span>`:''}`}</div>
  ${mapSVG(r,{dest:destLL,ghost:c.type==='dest'&&S.mode==='friendly'?c.d.normal:null})}
  ${hzs.map(s=>`<div class="alert lv2"><span style="font-size:1.3em">${I.hazard}</span><div><div class="lbl">${I.cone} ${s.hzSim?'示範情境（假設）':'道路施工・'+WORKS_AT}</div><p>${s.hz}</p></div></div>`).join('')}
  ${st.hots.map(h=>`<div class="alert ${hotLv(h).k}"><span class="big-ic">${I.car}</span><div style="flex:1"><div class="lbl">${I.hazard} ${hotLv(h).t}${h.sim?'・示範情境（假設）':''}</div><p style="font-size:1.1em">小心轉彎車</p><details class="whyhot"><summary>為什麼？</summary><p>${hotWhy(h)}</p></details></div></div>`).join('')}
@@ -673,10 +669,10 @@ nav(){
  ${viaBar(st)}
  <div class="progress" aria-label="第 ${S.step+1} 段，共 ${st.segs.length} 段"><span style="width:${(S.step+1)/st.segs.length*100}%"></span></div>
  <div class="navcard ${on?'sh':'ex'}">
-  <svg class="arrow" viewBox="0 0 100 100" style="transform:rotate(${ang.toFixed(0)}deg)" aria-hidden="true"><path d="M50 8L84 48H62v44H38V48H16z" fill="${dk?(on?'var(--cool)':'var(--muted)'):(on?'var(--leaf)':'var(--sun)')}"/></svg>
+  <svg class="arrow" viewBox="0 0 100 100" style="transform:rotate(${ang.toFixed(0)}deg)" aria-hidden="true"><path d="M50 8L84 48H62v44H38V48H16z" fill="${dk?(on?'var(--cool)':'var(--muted)'):(on?'var(--shade)':'var(--sun)')}"/></svg>
   <h2>${s.txt}</h2>
   <div class="dist">約 ${s.d} 公尺・${Math.max(1,Math.round(s.d/WALK))} 分鐘</div>
-  <span class="exposure" style="color:${dk?(on?'var(--cool)':'var(--muted)'):(on?'var(--leaf)':'var(--sun)')}">${dk?(on?I.lamp+' 路燈多':I.moon+' 較暗，慢慢走'):(on?I.tree+' '+shWhy(s):I.sun+' 會曬')}</span>
+  <span class="exposure" style="color:${dk?(on?'var(--cool)':'var(--muted)'):(on?'var(--shade)':'var(--sun)')}">${dk?(on?I.lamp+' 路燈多':I.moon+' 較暗，慢慢走'):(on?I.tree+' '+shWhy(s):I.sun+' 會曬')}</span>
  </div>
  ${s.hz?`<div class="alert lv2"><span style="font-size:1.3em">${I.hazard}</span><div><div class="lbl">${I.cone} ${s.hzSim?'示範情境（假設）':'道路施工・'+WORKS_AT}</div><p>${s.hz}</p></div></div>`:''}
  ${s.hots.length?`<div class="alert ${hotLv(s.hots[0]).k}"><span class="big-ic">${I.car}</span><div><div class="lbl">${I.hazard} 前面是${hotLv(s.hots[0]).t}${s.hots[0].sim?'・示範情境（假設）':''}</div><p style="font-size:1.1em">小心轉彎車，車停了再走</p>${S.time===5?`<small>${I.tlight} 清晨常有車闖紅燈，綠燈亮了先看左右</small>`:''}</div></div>`:''}
@@ -875,6 +871,7 @@ function renderPanel(){
   <button class="small" data-tab="method" style="min-height:48px">怎麼算的？看「方法」分頁 →</button></div>`;
  } else if(S.tab==='ver'){
   const V=[
+   ['1.26','10/24','主題色改回原本配色（綠色主色）：弘道橘與高溫、危險提醒的橘紅色太接近，長輩容易誤判為警示'],
    ['1.25.4','10/24','簡介改以「走這條，一路順！」為主；「這里需要你」改為相關專案連結'],
    ['1.25.3','10/24','README 開頭與 App 說明改為不限季節：依天氣與時段找路，之後串接氣候資料提醒保暖、避雨'],
    ['1.25.2','10/24','README 前後文一致性修正：Web App 說法、補友善店家與產業局、紙本地圖改為後續推動、上線評估與 100 日計畫對齊'],
