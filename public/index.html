@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="走這條！">
+<meta name="apple-mobile-web-app-title" content="走這條，一路順！">
 <meta name="theme-color" content="#1f6b4f">
 <link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials">
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}</style>
 </head>
 <body>
-<title>走這條！求最大陰影面積</title>
+<title>走這條，一路順！</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
@@ -67,6 +67,7 @@ button:disabled{opacity:.45;cursor:default}
 
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .brand{font-family:var(--f-display);font-size:1.45em;line-height:1.1}
+@media (max-width:380px){.brand{font-size:1.25em}}
 .brand small{display:block;font-family:var(--f-body);font-size:.45em;color:var(--muted);margin-top:4px}
 .wx{display:flex;align-items:center;gap:8px;background:var(--cool-soft);border:0;border-radius:16px;padding:6px 12px 6px 8px;min-height:56px}
 .wx b{font-size:1.5em;font-variant-numeric:tabular-nums}
@@ -92,6 +93,15 @@ button:disabled{opacity:.45;cursor:default}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .big,:root:not([data-theme="light"]) .go,:root:not([data-theme="light"]) .rest,:root:not([data-theme="light"]) .spk{color:#0e1512}}
 :root[data-theme="dark"] .big,:root[data-theme="dark"] .go,:root[data-theme="dark"] .rest,:root[data-theme="dark"] .spk{color:#0e1512}
 .minor{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.minor3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.minor3 .small{flex-direction:column;gap:4px;min-height:92px;font-size:1.05em;padding:6px 4px;line-height:1.2}
+.big.main{min-height:176px;flex-direction:column;justify-content:center;text-align:center;gap:10px}
+.big.main .ic{width:76px;height:76px;font-size:2.9em}
+.big.main b{font-size:1.9em}
+.big.main .icrow{justify-content:center}
+.big .bigsub{display:block;font-size:.95em;margin-top:6px;opacity:.95}
+.vias{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.88em}
+.vias .chip.done{opacity:.55;text-decoration:line-through}
 .small{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface);border:2px solid var(--line);border-radius:16px;min-height:60px;font-weight:700;padding:6px 10px;text-align:center}
 .linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:.85em;align-self:center;padding:8px}
 
@@ -233,7 +243,7 @@ body.app-mode .sim-strip{font-size:.62em;padding:4px 8px}
 </style>
 
 <div class="intro">
-  <h1>走這條！求最大陰影面積</h1>
+  <h1>走這條，一路順！</h1>
   <p id="toZheli" hidden style="margin:0 0 4px"><a href="/zheli/">← 母體：這里需要你（臺北市 456 里高齡風險）</a></p>
   <script>try{if(/workers\.dev$/.test(location.hostname))document.getElementById('toZheli').hidden=false}catch(e){}</script>
   <p><span class="sim-tag">市政 debug松 概念原型</span>　示範區：臺北市大安區。白天避曬、清晨與晚上自動改為安全優先。廁所、飲水機、涼適點、路燈、騎樓與長者行人事故取自開放資料；路線形狀、樹蔭時段、活動與天氣為模擬。</p>
@@ -424,13 +434,15 @@ const spk=()=>`<button class="spk" data-a="say" aria-label="唸給我聽">${I.sp
 const screen=$('#screen'),phone=$('#phone');
 const cur=()=>S.stack[S.stack.length-1];
 function go(v){stopAuto();S.stack.push(v);S.step=0;render(true)}
-function back(){stopAuto();if(S.stack.length>1)S.stack.pop();render(true)}
+function back(){stopAuto();if(cur()==='nav'&&S.ctx)delete S.ctx.via;if(S.stack.length>1)S.stack.pop();render(true)}
 // ---------- 模擬走路：自動前進＋語音（正式版改由 GPS 觸發） ----------
 let T=null;
 function stopAuto(){S.auto=false;clearTimeout(T);T=null;try{speechSynthesis.cancel()}catch(e){}}
 function stepSpeech(r,i){const st=stats(r),s=st.segs[i],dk=isDark(),full=S.navMode==='full',out=[];
  if(i===0)out.push(full?'出發了。':'出發了，需要注意的地方我會提醒你。');
  if(full)out.push(s.txt.replace(/（.*?）/g,'')+'。');
+ if(!full&&s.via)out.push('先去'+s.stop.name+'。');
+ if(!full&&s.rejoin)out.push('回到原來的路，繼續走。');
  if(s.hz)out.push('前面施工，'+s.hz.replace(/^假設/,'').replace(/（.*?）/g,'')+'。');
  const prevH=i>0?st.segs[i-1].hots.map(h=>h.name):[];
  if(s.hots.some(h=>!prevH.includes(h.name)))out.push('前面路口，小心轉彎車，車停了再走。'+(S.time===5?'綠燈亮了，先看左右。':''));
@@ -444,11 +456,12 @@ function speakThen(t,cb){
  T=setTimeout(fin,Math.max(2500,t.length*300))}
 function autoStep(){if(!S.auto||cur()!=='nav')return;const r=routeOf(),n=stats(r).segs.length;
  speakThen(stepSpeech(r,S.step),()=>{if(!S.auto||cur()!=='nav')return;
-  if(S.step<n-1){S.step++;render();autoStep()}
+  if(S.step<n-1){S.step++;render();if(stats(r).segs[S.step].rest){S.auto=false;render();speakThen(S.say,()=>{});return}autoStep()}
   else{S.auto=false;S.sheet='done';render();speakThen('到了，記得喝水，坐下來休息。',()=>{})}})}
 
 // route helpers
-function routeOf(){const c=S.ctx;if(!c)return null;if(c.type==='dest')return S.mode==='friendly'?friendlyOf(c.d):c.d[S.mode];return c.route}
+function routeOf(){const c=S.ctx;if(!c)return null;if(c.via)return c.via;if(c.type==='dest')return S.mode==='friendly'?friendlyOf(c.d):c.d[S.mode];return c.route}
+function destName(){const c=S.ctx;return !c?'':c.type==='dest'?c.d.n:c.type==='quick'?c.target.name:c.p.n}
 // 天暗時，依真實路燈資料比較「走公園」與「走大路」，分數低者推薦
 const nightPick=d=>stats(d.friendly).weight<=stats(d.safe).weight?d.friendly:d.safe;
 const friendlyOf=d=>isDark()?nightPick(d):d.friendly;
@@ -469,6 +482,20 @@ function stats(r){
 // minute along route for each facility: nearest segment point
 function facMinute(r,f){const st=stats(r);let best=1e9,acc=0,at=0;st.segs.forEach(s=>{for(let i=0;i<=10;i++){const p=[s.from[0]+(s.to[0]-s.from[0])*i/10,s.from[1]+(s.to[1]-s.from[1])*i/10];const d=dist(p,f.ll);if(d<best){best=d;at=acc+s.d*i/10}}acc+=s.d});return {min:Math.max(1,Math.round(at/WALK)),off:best}}
 
+// 走路中「我要休息一下」：找離目前位置最近的廁所／飲水／可以坐的地方，加進路線（A → 停靠點 → B）
+const STOPK={wc:['我要上廁所','上完廁所'],water:['我要喝水','喝點水'],seat:['我要坐一下','坐下休息']};
+function nearStop(k,p){let pool;
+ if(k==='wc')pool=TOILETS.map(t=>({k:'wc',name:t[0],ll:[t[1],t[2]],src:'real',acc:t[4],par:t[5]}));
+ else if(k==='water')pool=WATERS.map(w=>({k:'water',name:w[0],ll:[w[1],w[2]],src:'real',cnt:w[3],open:w[4]})).concat(COOLS.filter(c=>c[8]).map(c=>({k:'water',name:c[0],ll:[c[2],c[3]],src:'real',open:c[4]})));
+ else pool=(S.ctx.via||routeOf()).fac.filter(f=>f.k==='seat').concat(COOLS.filter(c=>c[7]).map(c=>({k:c[5]?'cool':'seat',name:c[0],ll:[c[2],c[3]],src:'real',open:c[4]})));
+ const best=pool.map(x=>({...x,d:dist(p,x.ll)})).sort((a,b)=>a.d-b.d)[0];
+ return best?{...best,min:Math.max(1,Math.round(best.d*1.3/WALK))}:null}
+function addStop(k){const r=routeOf(),i=S.step,st=stats(r),o=r.segs[i],c=nearStop(k,st.segs[i].from);if(!c)return null;
+ const back=o.txt.startsWith('回到原來的路')?o.txt:'回到原來的路，'+o.txt;
+ const segs=r.segs.slice(0,i).concat([{to:c.ll,sh:o.sh,txt:`往${c.name}走`,via:1,stop:c,want:k},{to:c.ll,sh:o.sh,txt:`在${c.name}休息`,rest:1,stop:c,want:k},{...o,txt:back,rejoin:1}],r.segs.slice(i+1));
+ S.ctx.via={segs,fac:r.fac.concat([c]),stairs:r.stairs||0};return c}
+const viaBar=st=>{const v=st.segs.map((s,i)=>({s,i})).filter(x=>x.s.rest);if(!v.length)return '';
+ return `<div class="vias"><b>途中加入</b>${v.map(x=>`<span class="chip ${x.i<S.step?'done':''}">${facDot(x.s.stop.k,1)} ${x.s.stop.name}${x.i<S.step?' ✓':''}</span>`).join('')}</div>`};
 // ---------- pieces ----------
 const header=t=>`<div class="topbar"><button class="back" data-a="back" aria-label="返回上一頁">${I.back}返回</button><div class="title">${t}</div>${spk()}</div>`;
 function wxChip(){const L=LV[S.lv],dk=isDark();return `<button class="wx" data-a="settings" aria-label="天氣與提醒設定"><span style="color:${dk?'var(--cool)':'var(--sun)'};font-size:1.6em">${dk?I.moon:I.sun}</span><span><b>${dk?L.t-(S.time===5?9:5):L.t}°C</b><small style="color:${dk?'var(--cool)':'var(--'+L.k+')'}">${dk?(S.time===5?'清晨':'晚上'):L.short}</small></span></button>`}
@@ -482,7 +509,7 @@ function careTip(){
  else{ic=I.water;t='記得帶水'}
  return `<div class="care"><span class="big-ic" style="color:var(--cool);font-size:2em;display:inline-flex">${ic}</span><div><div class="lbl">APP 提醒</div><b style="font-size:1.1em">${t}</b></div></div>`}
 const facDot=(k,s)=>{const f=FAC[k];return `<span style="color:${f.c};font-size:${s||1.3}em;display:inline-flex" aria-hidden="true">${I[f.ic]}</span>`};
-function facDetail(f){if(f.k==='wc')return `${f.name}・${f.acc?`無障礙 ${f.acc} 座`:'無無障礙座'}${f.par?`・親子 ${f.par}`:''}`;if(f.k==='water')return `${f.name}・飲水機 ${f.cnt} 台`;return f.name}
+function facDetail(f){if(f.k==='wc')return `${f.name}・${f.acc?`無障礙 ${f.acc} 座`:'無無障礙座'}${f.par?`・親子 ${f.par}`:''}`;if(f.k==='water')return `${f.name}${f.cnt?`・飲水機 ${f.cnt} 台`:'・飲水'}`;return f.name}
 
 function mapSVG(r,opts){
  opts=opts||{};
@@ -531,20 +558,20 @@ function coolNear(){
 // ---------- screens ----------
 const V={
 home(){
- const L=LV[S.lv];S.say=`${L.off&&!isDark()?'今天'+L.msg+'。':''}${isDark()?'天暗了，走亮的路。要出門走路，按綠色。需要幫忙，按電話打給家人。':'要涼快，按藍色。要出門走路，按綠色。'}`;
- return `<div class="topbar"><div class="brand">走這條！<small>求最大陰影面積・大安區示範</small></div>${wxChip()}${spk()}</div>
+ const L=LV[S.lv],dk=isDark();S.say=`${L.off&&!dk?'今天'+L.msg+'。':''}${dk?'天暗了，走亮的路。':''}要出門，按「我要去那裡」。要上廁所、喝水${dk?'':'、找地方休息'}，按下面的按鈕。${dk?'需要幫忙，按家人。':''}`;
+ const sb=(a,ic,t)=>`<button class="small" data-a="${a}">${ic}<span>${t}</span></button>`;
+ return `<div class="topbar"><div class="brand"><span style="white-space:nowrap">走這條，</span><span style="white-space:nowrap">一路順！</span><small>大安區示範</small></div>${wxChip()}${spk()}</div>
  ${officialAlert()}
- ${isDark()?`<div class="alert lv0" role="status" style="color:var(--cool);background:var(--cool-soft)"><span class="big-ic">${I.moon}</span><div><div class="lbl">${S.time===5?'清晨':'晚上'}・安全模式</div><p style="font-size:1.1em">天暗了，走亮的路</p></div></div>`:''}
- ${S.lv>=1||isDark()?careTip():''}
- ${isDark()?'':`<button class="big cool" data-a="go:cool"><span class="ic">${I.snow}</span><span><b>納涼地點</b><span class="icrow" aria-label="冷氣、座位、活動">${I.snow}${I.seat}${I.people}</span></span></button>`}
- <button class="big shade" data-a="go:dest"><span class="ic">${isDark()?I.lamp:I.tree}</span><span>${isDark()?`<b>安心路線</b><span class="icrow" aria-label="路燈多、避開要小心的路口">${I.lamp}${I.walk}${I.car}</span>`:`<b>陰涼路線</b><span class="icrow" aria-label="樹蔭、座椅、避開施工">${I.tree}${I.seat}${I.cone}</span>`}</span></button>
- <div class="minor"><button class="small" style="min-height:76px;font-size:1.1em" data-a="quick:wc">${facDot('wc',1.8)}廁所</button>${isDark()?`<button class="small" style="min-height:76px;font-size:1.1em" data-a="call"><span style="color:var(--cool);font-size:1.8em;display:inline-flex">${I.phone}</span>家人</button>`:`<button class="small" style="min-height:76px;font-size:1.1em" data-a="quick:water">${facDot('water',1.8)}喝水</button>`}</div>
+ ${dk?`<div class="alert lv0" role="status" style="color:var(--cool);background:var(--cool-soft)"><span class="big-ic">${I.moon}</span><div><div class="lbl">${S.time===5?'清晨':'晚上'}・安全模式</div><p style="font-size:1.1em">天暗了，走亮的路</p></div></div>`:''}
+ ${S.lv>=1||dk?careTip():''}
+ <button class="big shade main" data-a="go:dest"><span class="ic">${I.walk}</span><span><b>我要去那裡</b><span class="icrow" aria-label="${dk?'路燈多、避開要小心的路口':'陰涼、可以休息、避開施工'}">${dk?I.lamp+I.walk+I.car:I.tree+I.seat+I.cone}</span><span class="bigsub">${dk?'走亮的路，避開要小心的路口':'挑好走、陰涼的路，路上可以休息'}</span></span></button>
+ <div class="minor3">${sb('quick:wc',facDot('wc',1.8),'廁所')}${sb('quick:water',facDot('water',1.8),'喝水')}${dk?sb('call',`<span style="color:var(--cool);font-size:1.8em;display:inline-flex">${I.phone}</span>`,'家人'):sb('go:cool',facDot('cool',1.8),'舒適地點')}</div>
  <button class="linkbtn" data-a="settings">${I.gear} 設定</button>`;
 },
 cool(){
  const list=PLACES.filter(p=>S.want==='cool'||p.act.length).map(p=>({p,m:stats(p.route).min})).sort((a,b)=>a.m-b.m);
  S.say=list.length?`最近的是${list[0].p.n}，走${list[0].m}分鐘。按一下就帶你去。`:'';
- return `${header('納涼地點')}
+ return `${header('舒適地點')}
  <div class="seg"><button aria-pressed="${S.want==='cool'}" data-a="want:cool">${facDot('cool',1.1)} 只想涼快</button><button aria-pressed="${S.want==='social'}" data-a="want:social">${facDot('social',1.1)} 想找人聊天</button></div>
  ${list.map(({p,m})=>`<button class="card" data-a="place:${p.id}">
    <span class="thumb" style="background:${p.hue}">${facDot(p.kind==='shade'?'seat':p.act.length&&p.src==='sim'?'social':'cool',2)}<br>地點照片</span>
@@ -557,8 +584,8 @@ cool(){
  <p class="note">活動時間為模擬；正式版接社會局關懷據點與長青學苑課表。</p>`;
 },
 dest(){
- S.say='你要去哪裡？按一個地方。';
- return `${header('去哪裡？')}
+ S.say='你要去哪裡？按一個地方。路上想上廁所、喝水或休息，走路時按「我要休息一下」就可以加進去。';
+ return `${header('我要去那裡')}
  <div class="minor">${DESTS.map(d=>`<button class="small" style="min-height:84px;font-size:1.02em" data-a="dest:${d.id}">${d.n}</button>`).join('')}</div>
  <button class="small" data-a="dest:market">說出地點（語音，示意）</button>
  <p class="note">常去的地方排在最前面，不需要打字。</p>`;
@@ -617,8 +644,20 @@ nav(){
  const dx=s.to[0]-s.from[0],dy=-(s.to[1]-s.from[1]);const ang=Math.atan2(dx,-dy)*180/Math.PI;
  let acc=0;for(let i=0;i<S.step;i++)acc+=st.segs[i].d;const nowMin=acc/WALK;
  const nxt=r.fac.map(f=>({f,...facMinute(r,f)})).filter(x=>x.min>nowMin).sort((a,b)=>a.min-b.min)[0];
+ const destN=destName();
+ if(s.rest){const verb=STOPK[s.want][1];
+  S.say=`到${s.stop.name}了。慢慢來，${verb}，好了再按「繼續走」，我會帶你回原來的路，繼續去${destN}。`;
+  return `${header('休息一下')}
+  <div class="progress" aria-label="第 ${S.step+1} 段，共 ${st.segs.length} 段"><span style="width:${(S.step+1)/st.segs.length*100}%"></span></div>
+  ${viaBar(st)}
+  <div class="navcard sh"><span style="display:inline-flex">${facDot(s.stop.k,4)}</span><h2>到了：${s.stop.name}</h2><div class="dist">${verb}，好了再繼續去 ${destN}</div>${s.stop.open?`<span class="chip">${s.stop.open}</span>`:''}</div>
+  ${mapSVG(r,{})}
+  <button class="go" data-a="resume">▶ 休息好了，繼續走</button>
+  <div class="navbtns"><button data-a="say">${I.speaker} 再說一次</button><button data-a="call">${I.phone} 打給家人</button></div>
+  <p class="note">若覺得頭暈、噁心或很喘，請先停下，並打電話給家人或 119。</p>`}
  S.say=`${s.txt}，大約${s.d}公尺。${dk?(on?'這段路燈多。':'這段比較暗，慢慢走。'):(on?'這段'+shWhy(s)+'。':'這段會曬。')}${s.hots.length?'前面路口要小心轉彎車，車停了再走。':''}`;
  return `${header('走路中')}
+ ${viaBar(st)}
  <div class="progress" aria-label="第 ${S.step+1} 段，共 ${st.segs.length} 段"><span style="width:${(S.step+1)/st.segs.length*100}%"></span></div>
  <div class="navcard ${on?'sh':'ex'}">
   <svg class="arrow" viewBox="0 0 100 100" style="transform:rotate(${ang.toFixed(0)}deg)" aria-hidden="true"><path d="M50 8L84 48H62v44H38V48H16z" fill="${dk?(on?'var(--cool)':'var(--muted)'):(on?'var(--shade)':'var(--sun)')}"/></svg>
@@ -632,7 +671,7 @@ nav(){
  ${nxt&&!last?`<div class="care">${facDot(nxt.f.k,1.5)}<div>前面約 ${Math.max(1,Math.round(nxt.min-nowMin))} 分鐘有 <b>${facDetail(nxt.f)}</b> ${src(nxt.f.src)}</div></div>`:''}
  <div class="seg"><button aria-pressed="${S.navMode==='alert'}" data-a="nmode:alert">${I.bell} 只提醒<small>熟悉的路</small></button><button aria-pressed="${S.navMode==='full'}" data-a="nmode:full">${I.walk} 每個轉彎<small>第一次去</small></button></div>
  <button class="go" data-a="auto" style="background:${S.auto?'var(--sun)':'var(--shade)'}">${S.auto?'⏸ 暫停':(S.step>0?'▶ 繼續走':'▶ 模擬走路')}</button>
- <div class="navbtns"><button data-a="say">${I.speaker} 再說一次</button><button data-a="rest">${facDot('seat',1.4)} 休息一下</button></div>
+ <div class="navbtns"><button data-a="say">${I.speaker} 再說一次</button><button data-a="rest">${facDot('seat',1.4)} 我要休息一下</button></div>
  <p class="note">正式版由 GPS 自動前進，以語音和震動提醒，不用邊走邊看手機。這裡用「模擬走路」示範。</p>`;
 }
 };
@@ -652,12 +691,13 @@ function sheetHTML(){
   <p class="note">這個視窗一天只出現一次。</p>
   <button class="go" style="background:var(--cool)" data-a="redcool">帶我去最近的涼爽地方</button>
   <button class="small" data-a="close">我知道了</button></div>`;
- if(S.sheet==='rest'){const r=routeOf();const st=stats(r);let acc=0;for(let i=0;i<S.step;i++)acc+=st.segs[i].d;
-  const c=r.fac.filter(f=>f.k==='seat'||f.k==='wc'||f.k==='water').map(f=>({f,...facMinute(r,f)})).sort((a,b)=>Math.abs(a.min-acc/WALK)-Math.abs(b.min-acc/WALK))[0];
-  return `<div class="scrim" data-a="close"></div><div class="sheet" role="dialog" aria-label="附近休息點"><h3>最近可以停下來的地方</h3>
-  ${c?`<div class="card">${facDot(c.f.k,2)}<div><b>${facDetail(c.f)}</b><p class="note">走過去約 ${Math.max(1,Math.round(Math.abs(c.min-acc/WALK)))} 分鐘</p>${src(c.f.src)}</div></div>`:'<p>沿途沒有已知的休息點</p>'}
+ if(S.sheet==='rest'){const st=stats(routeOf()),p=st.segs[S.step].from;
+  const opts=Object.keys(STOPK).map(k=>({k,t:STOPK[k][0],c:nearStop(k,p)})).filter(o=>o.c);
+  return `<div class="scrim" data-a="close"></div><div class="sheet" role="dialog" aria-label="我要休息一下"><h3>${facDot('seat',1.2)} 我要休息一下</h3>
+  <p class="note" style="margin:0">按一個，幫你先繞過去，休息完再繼續去 ${destName()}。</p>
+  ${opts.map(o=>`<button class="card" data-a="via:${o.k}" style="min-height:84px">${facDot(o.k,2)}<span style="min-width:0;flex:1"><h3>${o.t}</h3><span class="meta"><span class="chip">${o.c.name}</span>${src(o.c.src)}</span></span><span class="walk"><b>${o.c.min}</b><small>分鐘</small></span></button>`).join('')}
   <p class="note">若覺得頭暈、噁心或很喘，請先停下，並打電話給家人或 119。</p>
-  <button class="go" data-a="close">帶我過去</button></div>`}
+  <button class="small" data-a="close">先不用，繼續走</button></div>`}
  if(S.sheet==='call')return `<div class="scrim" data-a="close"></div><div class="sheet" role="dialog" aria-label="打給家人"><h3>${I.phone} 打給家人</h3>
   <button class="go" style="background:var(--cool)" data-a="close">${I.phone} 打給 女兒（模擬）</button>
   <button class="small" style="min-height:64px;color:var(--lv3);border-color:var(--lv3)" data-a="close">${I.phone} 119</button>
@@ -705,11 +745,11 @@ function renderPanel(){
   <div><h4>2 分鐘 Demo 劇本</h4><ol>
    <li><b>0:00</b> 首頁：切到「紅色燈號」，跳出一次提醒，按「帶我去最近的涼爽地方」</li>
    <li><b>0:20</b> 切「想找人聊天」：據點下午有健康操，避暑也能出門交朋友</li>
-   <li><b>0:35</b> 返回首頁，按「找陰涼路線」→「公有信義市場」，比較一般地圖與長者友善</li>
+   <li><b>0:35</b> 返回首頁，按「我要去那裡」→「公有信義市場」（阿嫲早上要去市場），比較最短與長者友善路線</li>
    <li><b>0:55</b> 切時段中午／傍晚：同一條路，遮蔭不同；地圖上綠色區塊是整平騎樓，傍晚最短的路因為騎樓多，反而比較涼</li>
    <li><b>1:10</b> 切「晚上 7 點」：改看真實路燈（地圖上的黃點）與事故路口。去信義市場會避開施工、走路燈多的信義路北側；信義路口出現「危險路口・示範情境（假設）・小心轉彎車」，點「為什麼？」看規則說明。改去大安區公所：路燈資料顯示最短的路就夠亮，系統直接推薦最短路線，不會為了「安全」多繞路</li>
    <li><b>1:35</b> 切「清晨 5 點」：多一句「清晨車輛較常闖紅燈」</li>
-   <li><b>1:45</b> 按「開始走」→「▶ 模擬走路」：自動前進，到危險路口自動唸「小心轉彎車」→ 抵達；最後說明哪些是真實資料</ol></div>
+   <li><b>1:45</b> 按「開始走」→「▶ 模擬走路」：自動前進，到危險路口自動唸「小心轉彎車」</li><li><b>1:55</b> 走到一半按「我要休息一下」→「我要上廁所」：最近的廁所加進路線（A → 廁所 → B），到了會停下來等；按「休息好了，繼續走」回原路 → 抵達市場；最後說明哪些是真實資料</li></ol></div>
   <div><h4>介面原則（長者友善）</h4><ul>
    <li><b>圖示＋2～4 個字</b>：圖示不單獨出現，長者對抽象圖示的理解因人而異</li>
    <li><b>每頁都有 🔊 唸給我聽</b>：不識字或看不清楚也能用（手機需有中文語音）</li>
@@ -821,6 +861,7 @@ function renderPanel(){
   <button class="small" data-tab="method" style="min-height:48px">怎麼算的？看「方法」分頁 →</button></div>`;
  } else if(S.tab==='ver'){
   const V=[
+   ['1.23','10/24','名稱改為「走這條，一路順！」。首頁改為「我要去那裡」一個主按鈕，下面是廁所、喝水、舒適地點（原納涼地點）；走路中按「我要休息一下」可把最近的廁所、飲水或座位加進路線，休息完回原路繼續走。100 日計畫更新'],
    ['1.15','10/23','「這里需要你」放進同一個專案與網址（/zheli/，同一組帳號密碼）；離線快取改為各頁分開存，避免互相覆蓋'],
    ['1.14','10/23','資料更新：人口改用 115 年 9 月；事故補到 2023–2025 三年（臺北市警察局明細）。門檻改用有出處的數值（超高齡 20%、樹冠覆蓋 40%、路口 76 公尺）；危險路口＝三年 ≥5 次（12 處，會提醒）、觀察路口＝3–4 次（103 處，只標示）。示範區只有 1 處觀察路口，信義路口危險路口改為示範情境（假設）。佐證、方法分頁全部更新'],
    ['1.13','10/23','道路施工改接臺北市今日施工資訊：地圖標出示範區真實施工，路線經過時提醒；網站上線版每次開啟抓最新資料。信義路施工保留為「示範情境（假設）」'],
@@ -852,9 +893,9 @@ function renderPanel(){
  } else {
   B.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">
   <p>目標：上任 100 天內，在大安區、萬華區試辦，夏季高溫前上線。</p>
-  <div class="phase"><b>第 1–30 天　資料盤點</b><ul><li>環保局：公廁補開放時間、飲水機補故障通報</li><li>公園處：公園座椅與遮陽棚建立點位</li><li>社會局：關懷據點、長青學苑課表格式化</li><li>環境部：確認 CoolMap 臺北點位介接方式</li><li>公園路燈工程管理處：路燈座標；警察局：交通事故資料（每半月更新）</li><li>工務局：介接今日施工資訊（每 10 分鐘），確認「影響通行」是否含人行道</li></ul></div>
-  <div class="phase p2"><b>第 31–70 天　建置與共同設計</b><ul><li>資訊局：以既有市府 App 或 LINE 官方帳號為載體，不另做新 App</li><li>樹木資料加建物陰影，推估各時段遮蔭</li><li>弘道等社福單位帶長者實地走 10 條路線，校正分數</li><li>事故熱點門檻（同地點長者 ≥ 2 件）與路燈加權，與交通局共同校正</li><li>在關懷據點找長者測試：每個圖示看得懂嗎？語音聽得清楚嗎？</li></ul></div>
-  <div class="phase p3"><b>第 71–100 天　試辦與評估</b><ul><li>兩區據點志工協助長者安裝與設定</li><li>民眾通報（人行道破損、障礙物）轉新工處處理</li><li>指標：使用人數、高溫日外出次數、通報處理天數</li><li>長者重複事故路口回饋交通局，檢討行人綠燈秒數</li></ul></div>
+  <div class="phase"><b>第 1–30 天　資料盤點</b><ul><li>環保局：公廁補開放時間、飲水機補故障通報</li><li>公園處：公園座椅與遮陽棚建立點位</li><li>社會局：關懷據點、長青學苑位置資料確認無誤</li><li>環境部：確認 CoolMap 臺北點位介接方式</li><li>中央氣象署：連結天候資料</li><li>公園路燈工程管理處：路燈座標；警察局：交通事故資料（每半月更新）</li><li>工務局：介接今日施工資訊（每 10 分鐘），確認「影響通行」是否含人行道</li><li>衛生福利部：串連 AED 地圖</li></ul></div>
+  <div class="phase p2"><b>第 31–70 天　建置與共同設計</b><ul><li>資訊局：以既有市府 App 或 LINE 官方帳號推播，以響應式畫面呈現，不另做新 App</li><li>樹木資料加建物陰影，推估各時段遮蔭</li><li>邀請長輩實地走測</li><li>事故熱點門檻（同地點長者 ≥ 2 件）與路燈加權，與交通局共同校正</li></ul></div>
+  <div class="phase p3"><b>第 71–100 天　試辦與評估、修正</b><ul><li>辦理操作學習課程，限額招募高齡體驗人員進行測試。每個圖示看得懂嗎？語音聽得清楚嗎？</li><li>民眾通報（人行道破損、障礙物）轉新工處處理</li><li>指標：使用人數、高溫日外出次數、通報處理天數</li><li>長者重複事故路口回饋交通局，檢討行人綠燈秒數</li></ul></div>
   <p>成本項目：資料整理人力、遮蔭推估運算、既有平台功能擴充、據點推廣教育。金額需與資訊局估算後提出。</p></div>`;
  }
 }
@@ -886,6 +927,8 @@ phone.addEventListener('click',e=>{
  else if(a==='auto'){if(S.auto){stopAuto();render()}else{S.auto=true;render();autoStep()}}
  else if(a==='nmode'){S.navMode=v;render()}
  else if(a==='rest'){stopAuto();S.sheet='rest';render()}
+ else if(a==='via'){const c=addStop(v);S.sheet=null;render();if(c)say(`好，先去${c.name}，大約走${c.min}分鐘。按「繼續走」出發。`)}
+ else if(a==='resume'){S.step++;S.auto=true;render();autoStep()}
  else if(a==='done'){S.sheet='done';render()}
  else if(a==='settings'){S.sheet='settings';render()}
  else if(a==='sw'){S.push[v]=!S.push[v];saveSet();render()}
